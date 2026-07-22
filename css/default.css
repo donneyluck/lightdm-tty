@@ -11,7 +11,7 @@ body {
 * {
     font-size:12px;
     line-height: 16px;
-    font-family: monospace;
+    font-family: 'Fira Code Nerd Font', 'FiraCode Nerd Font', 'Fira Code', 'Fira Mono', monospace;
     cursor:none;
 }
 
@@ -23,8 +23,8 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    width: 600px;
-    height: 400px;
+    width: 680px;
+    height: 450px;
     background-color: #404552;
     border: 3px solid #30BC6D;
     font-size:13px;
@@ -42,11 +42,26 @@ body {
     border:0;
     background:transparent;
     color: #30BC6D;
-    font-family: monospace;
+    font-family: inherit;
 }
 
 #stdout {
     color: #30BC6D;
+    white-space: pre;
+    overflow-x: auto;
+    text-align: center;
+}
+
+#stdout pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    text-align: center;
 }
 
 #prompt {
