@@ -35,6 +35,8 @@ class tty {
         }.bind(this));
 
         window.authentication_complete = this._authentication_complete.bind(this);
+        window.show_prompt = function() {};
+        window.show_message = function() {};
 
         if (this.utils.isEmpty(commands) || typeof commands != 'object') {
             this.utils.except("Commands must be an object and must not be empty!");
@@ -198,9 +200,9 @@ class tty {
     }
 
     _authentication_complete() {
-        // TODO: Check if session exists
         if (lightdm.is_authenticated) {
-            lightdm.start_session(this.session);
+            var startFn = lightdm.start_session_sync || lightdm.start_session;
+            startFn.call(lightdm, this.session);
         } else {
             this.stderr("incorrect password");
         }
@@ -315,5 +317,15 @@ class utils {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    let terminal = new tty(commands);
+    if (typeof lightdm !== 'undefined') {
+        new tty(commands);
+    } else {
+        // web-greeter may inject lightdm after DOMContentLoaded
+        var checkInterval = setInterval(function() {
+            if (typeof lightdm !== 'undefined') {
+                clearInterval(checkInterval);
+                new tty(commands);
+            }
+        }, 50);
+    }
 });

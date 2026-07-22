@@ -22,19 +22,21 @@ let commands = {
             }
             
             this.session = user.session !== null && user.session === this.session ? user.session : this.session;
-            lightdm.start_authentication(user.name);    
+            var authFn = lightdm.authenticate || lightdm.start_authentication;
+            authFn.call(lightdm, user.name);
             return true;
         },
 
         password: function(password, response) {
             if (lightdm.in_authentication) {
-                setTimeout(function(){ 
-                    lightdm.respond(password);
+                var respondFn = lightdm.respond || lightdm.provide_secret;
+                setTimeout(function(){
+                    respondFn.call(lightdm, password);
                 }, 200);
-    
+
                 return null;
             }
-    
+
             return `call login [user]<br>`;
         }
     },
@@ -48,7 +50,7 @@ let commands = {
             '&nbsp;&nbsp;&nbsp;&nbsp;Login to an existing session.<br><br>';
         },
 
-        callback: function (args) {            
+        callback: function (args) {
             let user = this.utils.arrayOfObjectsHasKeyValue(lightdm.users, 'logged_in', true);
 
             if (!user) {
@@ -59,16 +61,18 @@ let commands = {
             if(lightdm.in_authentication) {
                 lightdm.cancel_authentication();
             }
-            
+
             this.session = user.session !== null ? user.session : lightdm.default_session;
-            lightdm.start_authentication(user[0].name);
+            var authFn = lightdm.authenticate || lightdm.start_authentication;
+            authFn.call(lightdm, user.name);
             return true;
         },
 
         password: function(password, response) {
             if (lightdm.in_authentication) {
-                setTimeout(function(){ 
-                    lightdm.respond(password);
+                var respondFn = lightdm.respond || lightdm.provide_secret;
+                setTimeout(function(){
+                    respondFn.call(lightdm, password);
                 }, 200);
     
                 return null;
