@@ -5,6 +5,10 @@ class tty {
         this.history_index = 0;
         this.previous = null;
         this.session = lightdm.default_session;
+        // web-greeter returns session objects, extract key if needed
+        if (typeof this.session === 'object' && this.session !== null) {
+            this.session = this.session.key || this.session;
+        }
 
         // Set up input handlers and focus
         this.input = document.getElementById('stdin');
@@ -22,7 +26,7 @@ class tty {
 
         // Set up output handlers
         this.output = document.getElementById('stdout');
-        this.default_prompt = user ? `<span class="stdout-green">${user.name}</span><span class="stdout-red">@</span>${lightdm.hostname} $\xa0` : lightdm.hostname + " $\xa0"
+        this.default_prompt = user ? `<span class="stdout-green">${user.username}</span><span class="stdout-red">@</span>${lightdm.hostname} $\xa0` : lightdm.hostname + " $\xa0"
 
         // Setup prompt
         this.prompt = document.getElementById('prompt');
@@ -34,9 +38,15 @@ class tty {
             this.input.focus();
         }.bind(this));
 
-        window.authentication_complete = this._authentication_complete.bind(this);
         window.show_prompt = function() {};
         window.show_message = function() {};
+
+        // web-greeter uses signal.connect(), webkit2-greeter uses global callback
+        if (lightdm.authentication_complete && lightdm.authentication_complete.connect) {
+            lightdm.authentication_complete.connect(this._authentication_complete.bind(this));
+        } else {
+            window.authentication_complete = this._authentication_complete.bind(this);
+        }
 
         if (this.utils.isEmpty(commands) || typeof commands != 'object') {
             this.utils.except("Commands must be an object and must not be empty!");

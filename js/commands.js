@@ -10,7 +10,7 @@ let commands = {
         },
 
         callback: function (args) {
-            let user = this.utils.arrayOfObjectsHasKeyValue(lightdm.users, 'name', args[0]);
+            let user = this.utils.arrayOfObjectsHasKeyValue(lightdm.users, 'username', args[0]);
 
             if (!user) {
                 this.stderr(`bash: no such user: ${args[0]}`);
@@ -23,7 +23,7 @@ let commands = {
 
             this.session = user.session !== null && user.session === this.session ? user.session : this.session;
             var authFn = lightdm.authenticate || lightdm.start_authentication;
-            authFn.call(lightdm, user.name);
+            authFn.call(lightdm, user.username);
             return true;
         },
 
@@ -64,7 +64,7 @@ let commands = {
 
             this.session = user.session !== null ? user.session : lightdm.default_session;
             var authFn = lightdm.authenticate || lightdm.start_authentication;
-            authFn.call(lightdm, user.name);
+            authFn.call(lightdm, user.username);
             return true;
         },
 
@@ -95,7 +95,7 @@ let commands = {
             let users = '';
 
             lightdm.users.forEach(function(user) {
-                users += '<span class="stdout-off-white">' + user.name + "</span><br>";
+                users += '<span class="stdout-off-white">' + user.username + "</span><br>";
             });
 
             return users;
