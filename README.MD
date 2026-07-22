@@ -1,10 +1,8 @@
 # lightdm-tty
 
-## About
+A terminal-style login theme for [web-greeter](https://github.com/JezerM/web-greeter).
 
-A simple terminal style theme for lightdm-webkit2-greeter
-
-[Live demo](https://enzyofficial.github.io/lightdm-tty/index.html)
+Forked from [eNzyOfficial/lightdm-tty](https://github.com/eNzyOfficial/lightdm-tty), adapted from lightdm-webkit2-greeter to web-greeter.
 
 ## Screenshot
 
@@ -12,54 +10,65 @@ A simple terminal style theme for lightdm-webkit2-greeter
 
 ## Installation
 
-* `cd /usr/share/lightdm-webkit/themes/`
-* `git clone https://github.com/eNzyOfficial/lightdm-tty.git tty`
-* `vim /etc/lightdm/lightdm-webkit2-greeter.conf`
-* Find `greeter` section and set `webkit-theme` to tty
+### 1. Install web-greeter (Arch Linux)
 
-You can run `./test.sh` to try it out if you like!
+```bash
+yay -S web-greeter
+```
 
-### Arch Linux
-lightdm-tty is available from the [Arch User Repository (AUR)](https://aur.archlinux.org/packages/lightdm-webkit2-theme-tty-git/). Install it with your favourite AUR helper, for example:
+### 2. Install the theme
 
-`pacaur -S lightdm-webkit2-theme-tty-git`
+```bash
+sudo mkdir -p /usr/share/web-greeter/themes/tty
+sudo cp -r * /usr/share/web-greeter/themes/tty/
+```
 
-If you don't want to use an AUR helper, you can always build the package manually from the PKGBUILD included in the repository.
+### 3. Configure greeter
 
-## Features
+Edit `/etc/lightdm/lightdm.conf`:
+```ini
+[Seat:*]
+greeter-session=web-greeter
+```
 
-* Command history using ↑ and ↓
-* Clear input using `ctrl+c`
-* Autocomplete using `TAB`
+Edit `/etc/lightdm/web-greeter.toml`:
+```toml
+[greeter]
+theme = "tty"
+```
 
-You can lock by using `dm-tool switch-to-greeter` or `dm-tool lock`
+### 4. Test (before rebooting)
+
+```bash
+web-greeter --debug
+```
+
+### Testing in browser
+
+You can test the theme locally by opening `index.html` in a browser. The `mock.js` provides fake data for preview.
 
 ## Commands
 
-* `login [user]` - Attempts to login as user
-* `passwd` - Attempts to login to locked/current session
-* `users` = Lists users
-* `ls` - Lists available sessions eg. i3
-* `poweroff` - Shuts down machine
-* `reboot` - Restarts machine
-* `suspend` - Suspends machine
-* `clear` - Clears output
-* `help` - Lists available commands
-* `man [command]` - Shows manual for command
-* `motd` - Shows MOTD
+- `login [user]` — Authenticate as user
+- `passwd` — Login to locked/current session
+- `users` — List users
+- `ls` — List available sessions (e.g. i3)
+- `poweroff` — Shutdown
+- `reboot` — Restart
+- `suspend` — Suspend
+- `clear` — Clear terminal
+- `help` — List commands
+- `man [command]` — Show help for command
+- `motd` — Show MOTD
 
-## TODO
+## Features
 
-* Make it more customizable
-* Languages
-* Layouts
+- Command history via ↑/↓
+- Clear input via Ctrl+C
+- Autocomplete via Tab
 
-## Contributions
-
-Feel free to make contributions! Suggestions, bug reports and pull requests are welcome.
-
-Thanks for [Tardog](https://github.com/Tardog) for adding it to the AUR
+Lock with `dm-tool lock`.
 
 ## License
 
-This work is free. You can redistribute it and/or modify it under the terms of the WTFPL (Do What The Fuck You Want To Public License), Version 2, as published by Sam Hocevar. See http://www.wtfpl.net/ for more details.
+WTFPL — Do What The Fuck You Want To Public License.
